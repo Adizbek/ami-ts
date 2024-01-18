@@ -19,6 +19,7 @@ import { AMICoreShowChannelsCompleteResult } from './types/action.core-show-chan
 export * from './types'
 
 const DEFAULT_RECONNECT_INTERVAL = 5000
+const DEFAULT_READ_TIMEOUT = 30000
 
 export default class AMI {
     private connection?: Net.Socket
@@ -37,6 +38,7 @@ export default class AMI {
             reconnect: true,
             listenEvents: true,
             reconnectInterval: 5000,
+            readTimeout: 30000,
         }
 
         this.options = Object.assign(defaultConfig, this.options)
@@ -67,7 +69,9 @@ export default class AMI {
         )
         this.connection.setKeepAlive(true)
         this.connection.setNoDelay(true)
-        this.connection.setTimeout(this._reconnectInterval)
+        this.connection.setTimeout(
+            this.options.readTimeout || DEFAULT_READ_TIMEOUT
+        )
         this.connection.setEncoding('utf-8')
 
         this.connection.on('close', () => {
@@ -78,12 +82,7 @@ export default class AMI {
 
             this.options.logger?.log('close')
 
-            if (this.shouldReconnect && this.options.reconnect) {
-                setTimeout(() => {
-                    this.options.logger?.log('reconnect')
-                    this.connect()
-                }, 1000)
-            }
+            this.reconnect()
         })
 
         this.connection.on('timeout', () => {
@@ -99,11 +98,7 @@ export default class AMI {
 
             this.options.logger?.log('error', err)
 
-            if (this.shouldReconnect && this.options.reconnect) {
-                setTimeout(() => {
-                    this.connect()
-                }, 1000)
-            }
+            this.reconnect()
         })
 
         return new Promise<void>((resolve, reject) => {
@@ -131,6 +126,15 @@ export default class AMI {
     disconnect() {
         this.shouldReconnect = false
         this.connection?.destroy()
+    }
+
+    reconnect() {
+        if (this.shouldReconnect && this.options.reconnect) {
+            setTimeout(() => {
+                this.options.logger?.log('reconnect')
+                this.connect()
+            }, this._reconnectInterval)
+        }
     }
 
     async sendAction<T>(action: AMIAction): Promise<T> {

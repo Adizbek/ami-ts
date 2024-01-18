@@ -86,7 +86,6 @@ export default class AMIDataReader extends TypedEventEmitter<AMIDataReaderEvents
                     this.resultHolder = {}
                 }
             } else if (emptyLines > 1) {
-                break
             }
         }
     }

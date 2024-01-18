@@ -7,5 +7,6 @@ export interface AMIOptions {
     keepAlive?: boolean
     reconnect?: boolean
     reconnectInterval?: number
+    readTimeout?: number
     logger?: Console
 }

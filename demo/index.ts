@@ -12,7 +12,9 @@ const ami = new AMI({
     reconnect: false,
     keepAlive: false,
     listenEvents: false,
-    // logger: console
+    readTimeout: 30000,
+
+    logger: console,
 })
 
 ami.connect()
@@ -23,14 +25,14 @@ ami.connect()
         // })
 
         // Implement Queues
-        // const queues = await ami.sendAction<unknown>({
-        //     @ts-ignore
-        // Action: 'Queues',
-        // })
+        const queues = await ami.sendAction<unknown>({
+            // @ts-ignore
+            Action: 'GSAgents',
+        })
 
-        const queues = await ami.actionQueues('6500')
+        // const queues = await ami.actionPJSIPShowEndpoints()
         console.log(queues)
 
-        ami.disconnect()
+        // ami.disconnect()
     })
     .catch(console.error)

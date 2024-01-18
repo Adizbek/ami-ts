@@ -1,4 +1,6 @@
 import { describe, test } from '@jest/globals'
+import * as fs from 'fs'
+import * as path from 'path'
 import AMIDataReader, { AMIDataReaderEvents } from '../src/AMIDataReader'
 import AMIDelayedResultCollector, {
     AMIDelayedResultCollectorEvents,
@@ -261,5 +263,39 @@ describe('AMI delayed result collector module', () => {
         reader.onNewData(Buffer.from(msg1))
 
         expect(cb).toHaveBeenCalledTimes(0)
+    })
+
+    test('Should read long data', () => {
+        const chunks = fs
+            .readFileSync(path.join(__dirname, 'raw/gs_agent_raw_data.txt'))
+            .toString()
+            .split('\n')
+            .map((line) => {
+                try {
+                    return JSON.parse(line).chunk
+                } catch (e) {
+                    return ''
+                }
+            })
+
+        const cb = jest.fn().mockImplementation((actionID, payload) => {
+            expect(payload).toHaveLength(25)
+        })
+
+        const delayedResultCollector = new AMIDelayedResultCollector().on(
+            AMIDelayedResultCollectorEvents.ActionResult,
+            cb
+        )
+
+        const reader = new AMIDataReader().on(
+            AMIDataReaderEvents.Result,
+            (result) => delayedResultCollector.collect(result)
+        )
+
+        chunks.forEach((msg1) => {
+            reader.onNewData(Buffer.from(msg1))
+        })
+
+        expect(cb).toHaveBeenCalledTimes(1)
     })
 })
