@@ -8,10 +8,12 @@ import {
     AMIAction,
     AMIActionTypes,
     AMILoginResult,
+    AMIOptions,
     AMIQueueStatusCompleteResult,
     AMIQueueSummaryCompleteResult,
-} from './types/actions'
-import { AMIOptions } from './types/ami'
+} from './types'
+
+export * from './types'
 
 const DEFAULT_RECONNECT_INTERVAL = 5000
 
@@ -164,17 +166,14 @@ export default class AMI {
         return result
     }
 
-    actionQueueSummary(queue?: string): Promise<AMIQueueSummaryCompleteResult> {
-        return this.sendAction<AMIQueueSummaryCompleteResult>({
+    actionQueueSummary(queue?: string) {
+        return this.sendAction<AMIQueueSummaryCompleteResult[]>({
             Action: AMIActionTypes.QueueSummary,
             Queue: queue,
         })
     }
 
-    actionQueueStatus(
-        queue?: string,
-        member?: string
-    ): Promise<AMIQueueStatusCompleteResult> {
+    actionQueueStatus(queue?: string, member?: string) {
         return this.sendAction<AMIQueueStatusCompleteResult>({
             Action: AMIActionTypes.QueueStatus,
             Queue: queue,

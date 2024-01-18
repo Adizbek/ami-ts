@@ -1,44 +1,12 @@
+import { AMIQueueStatusAction } from './action.queue-status'
+import { AMIQueueSummaryAction } from './action.queue-summary'
+
 export enum AMIActionTypes {
     Login = 'Login',
     Ping = 'Ping',
     QueueSummary = 'QueueSummary',
     QueueStatus = 'QueueStatus',
     CoreShowChannels = 'CoreShowChannels',
-}
-
-interface AMIQueueSummaryAction {
-    Action: AMIActionTypes.QueueSummary
-    Queue?: string
-}
-
-export interface AMIQueueSummaryCompleteResult {
-    Event: AMIActionTypes.QueueSummary
-    Queue: string
-    LoggedIn: string
-    Available: string
-    Callers: string
-    HoldTime: string
-    TalkTime: string
-    LongestHoldTime: string
-    ActionID: string
-}
-
-interface AMIQueueStatusAction {
-    Action: AMIActionTypes.QueueStatus
-    Queue?: string
-    Member?: string
-}
-
-export interface AMIQueueStatusCompleteResult {
-    Event: AMIActionTypes.QueueStatus
-    Queue: string
-    LoggedIn: string
-    Available: string
-    Callers: string
-    HoldTime: string
-    TalkTime: string
-    LongestHoldTime: string
-    ActionID: string
 }
 
 interface AMILoginAction {
