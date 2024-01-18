@@ -9,9 +9,12 @@ import {
     AMIActionTypes,
     AMILoginResult,
     AMIOptions,
+    AMIPJSIPShowEndpointsCompleteResult,
+    AMIQueuesCompleteResult,
     AMIQueueStatusCompleteResult,
     AMIQueueSummaryCompleteResult,
 } from './types'
+import { AMICoreShowChannelsCompleteResult } from './types/action.core-show-channels'
 
 export * from './types'
 
@@ -166,6 +169,12 @@ export default class AMI {
         return result
     }
 
+    actionQueues() {
+        return this.sendAction<AMIQueuesCompleteResult>({
+            Action: AMIActionTypes.Queues,
+        })
+    }
+
     actionQueueSummary(queue?: string) {
         return this.sendAction<AMIQueueSummaryCompleteResult[]>({
             Action: AMIActionTypes.QueueSummary,
@@ -178,6 +187,18 @@ export default class AMI {
             Action: AMIActionTypes.QueueStatus,
             Queue: queue,
             Member: member,
+        })
+    }
+
+    actionPJSIPShowEndpoints() {
+        return this.sendAction<AMIPJSIPShowEndpointsCompleteResult>({
+            Action: AMIActionTypes.PJSIPShowEndpoints,
+        })
+    }
+
+    actionCoreShowChannels() {
+        return this.sendAction<AMICoreShowChannelsCompleteResult>({
+            Action: AMIActionTypes.CoreShowChannels,
         })
     }
 

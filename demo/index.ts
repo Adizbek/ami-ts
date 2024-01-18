@@ -18,10 +18,17 @@ const ami = new AMI({
 ami.connect()
     .then(async () => {
         // const queues = await ami.sendAction<unknown>({
-        // @ts-ignore
-        // Action: 'PJSIPShowEndpoints'
+        //     //     @ts-ignore
+        //     Action: 'BridgeList',
         // })
-        const queues = await ami.actionQueueSummary()
+
+        // Implement Queues
+        // const queues = await ami.sendAction<unknown>({
+        //     @ts-ignore
+        // Action: 'Queues',
+        // })
+
+        const queues = await ami.actionQueues('6500')
         console.log(queues)
 
         ami.disconnect()

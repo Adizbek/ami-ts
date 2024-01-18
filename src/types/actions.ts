@@ -1,39 +1,29 @@
+import { AMICoreShowChannelsAction } from './action.core-show-channels'
+import { AMILoginAction } from './action.login'
+import { AMIPJSIPShowEndpointsAction } from './action.pjsip-show-endpoints'
 import { AMIQueueStatusAction } from './action.queue-status'
 import { AMIQueueSummaryAction } from './action.queue-summary'
+import { AMIQueuesAction } from './action.queues'
 
 export enum AMIActionTypes {
     Login = 'Login',
     Ping = 'Ping',
+    Queues = 'Queues',
     QueueSummary = 'QueueSummary',
     QueueStatus = 'QueueStatus',
     CoreShowChannels = 'CoreShowChannels',
-}
-
-interface AMILoginAction {
-    Action: AMIActionTypes.Login
-    Username: string
-    Secret: string
-    // if on - AMI will send events, if off - AMI will not send events
-    Events?: 'ON' | 'OFF'
-}
-
-export interface AMILoginResult {
-    Response: 'Success' | 'Error'
-    Message: string
-    ActionID: string
+    PJSIPShowEndpoints = 'PJSIPShowEndpoints',
 }
 
 interface AMIPingAction {
     Action: AMIActionTypes.Ping
 }
 
-interface AMICoreShowChannelsAction {
-    Action: AMIActionTypes.CoreShowChannels
-}
-
 export type AMIAction =
     | AMILoginAction
     | AMIPingAction
+    | AMIQueuesAction
     | AMIQueueSummaryAction
     | AMIQueueStatusAction
     | AMICoreShowChannelsAction
+    | AMIPJSIPShowEndpointsAction

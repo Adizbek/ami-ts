@@ -1,4 +1,7 @@
 export * from './ami'
 export * from './actions'
+export * from './action.queues'
 export * from './action.queue-status'
 export * from './action.queue-summary'
+export * from './action.login'
+export * from './action.pjsip-show-endpoints'
