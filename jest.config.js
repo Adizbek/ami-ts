@@ -4,4 +4,7 @@ module.exports = {
     testEnvironment: 'node',
     roots: ['./tests/', './src/'],
     collectCoverage: true,
+    moduleNameMapper: {
+        "^@/(.*)$": "<rootDir>/../src/$1",
+    }
 }

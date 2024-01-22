@@ -10,11 +10,13 @@ import {
     AMILoginResult,
     AMIOptions,
     AMIPJSIPShowEndpointsCompleteResult,
+    AMIQueuePauseResult,
     AMIQueuesCompleteResult,
     AMIQueueStatusCompleteResult,
     AMIQueueSummaryCompleteResult,
 } from './types'
 import { AMICoreShowChannelsCompleteResult } from './types/action.core-show-channels'
+import { AMIQueuePauseAction } from './types/action.queue-pause'
 
 export * from './types'
 
@@ -203,6 +205,28 @@ export default class AMI {
     actionCoreShowChannels() {
         return this.sendAction<AMICoreShowChannelsCompleteResult>({
             Action: AMIActionTypes.CoreShowChannels,
+        })
+    }
+
+    /**
+     * Makes a queue member temporarily unavailable. (Requires Privileges: agent,all)
+     * @param extension The name of the interface (extension) to pause or unpause.
+     * @param paused Pause or unpause the interface. Set to 'true' to pause the member or 'false' to unpause.
+     * @param queue The name of the queue in which to pause or unpause this member. If not specified, the member will be paused or unpaused in all the queues it is a member of.
+     * @param reason Text description, returned in the event QueueMemberPaused.
+     */
+    actionQueuePause(
+        extension: string,
+        paused: boolean,
+        queue?: string,
+        reason?: string
+    ) {
+        return this.sendAction<AMIQueuePauseResult>({
+            Action: AMIActionTypes.QueuePause,
+            Interface: extension,
+            Paused: paused ? 'true' : 'false',
+            Queue: queue,
+            Reason: reason,
         })
     }
 
