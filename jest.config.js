@@ -5,6 +5,6 @@ module.exports = {
     roots: ['./tests/', './src/'],
     collectCoverage: true,
     moduleNameMapper: {
-        "^@/(.*)$": "<rootDir>/../src/$1",
-    }
+        '^@/(.*)$': '<rootDir>/../src/$1',
+    },
 }

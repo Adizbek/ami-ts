@@ -16,12 +16,11 @@ import {
     AMIQueueSummaryCompleteResult,
 } from './types'
 import { AMICoreShowChannelsCompleteResult } from './types/action.core-show-channels'
-import { AMIQueuePauseAction } from './types/action.queue-pause'
 
 export * from './types'
 
-const DEFAULT_RECONNECT_INTERVAL = 5000
-const DEFAULT_READ_TIMEOUT = 30000
+const DEFAULT_RECONNECT_INTERVAL = 2000
+const DEFAULT_READ_TIMEOUT = 10000
 
 export default class AMI {
     private connection?: Net.Socket
@@ -33,17 +32,19 @@ export default class AMI {
     private keepAliveIntervalRef?: NodeJS.Timeout
     private shouldReconnect = true
     private readonly _reconnectInterval: number
+    private _reconnectTimer?: NodeJS.Timeout
+    private _nextReconnectAfter = 0
 
     constructor(private readonly options: AMIOptions) {
         const defaultConfig: Partial<AMIOptions> = {
             keepAlive: true,
             reconnect: true,
             listenEvents: true,
-            reconnectInterval: 5000,
             readTimeout: 30000,
         }
 
         this.options = Object.assign(defaultConfig, this.options)
+
         this._reconnectInterval =
             this.options.reconnectInterval &&
             Number.isInteger(this.options.reconnectInterval)
@@ -52,6 +53,8 @@ export default class AMI {
     }
 
     async connect() {
+        if (this._reconnectTimer) clearTimeout(this._reconnectTimer)
+
         const delayedResultCollector = new AMIDelayedResultCollector().on(
             AMIDelayedResultCollectorEvents.ActionResult,
             (actionID, payload) => {
@@ -93,6 +96,10 @@ export default class AMI {
             this.connection?.destroy()
         })
 
+        this.connection.on('connect', () => {
+            this.options.logger?.log('connect')
+            this._nextReconnectAfter = 0
+        })
         this.connection.on('data', (data) => dataReader.onNewData(data))
         this.connection.on('error', (err: Error) => {
             this.connected = false
@@ -125,17 +132,23 @@ export default class AMI {
         })
     }
 
-    disconnect() {
-        this.shouldReconnect = false
+    disconnect(allowReconnect = false) {
+        this.shouldReconnect = allowReconnect
         this.connection?.destroy()
     }
 
     reconnect() {
         if (this.shouldReconnect && this.options.reconnect) {
-            setTimeout(() => {
+            this._reconnectTimer = setTimeout(() => {
+                if (this.connection) {
+                    this.connection.removeAllListeners()
+                    this.connection.destroy()
+                }
+
                 this.options.logger?.log('reconnect')
+                this._nextReconnectAfter = this._reconnectInterval
                 this.connect()
-            }, this._reconnectInterval)
+            }, this._nextReconnectAfter)
         }
     }
 
