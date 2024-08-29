@@ -15,7 +15,10 @@ import {
     AMIQueueStatusCompleteResult,
     AMIQueueSummaryCompleteResult,
 } from './types'
+import { AMICoreSettingsResult } from './types/action.core-settings'
 import { AMICoreShowChannelsCompleteResult } from './types/action.core-show-channels'
+import { AMICoreStatusResult } from './types/action.core-status'
+import { AMISipPeersCompleteResult } from './types/action.sip-peers'
 
 export * from './types'
 
@@ -240,6 +243,24 @@ export default class AMI {
             Paused: paused ? 'true' : 'false',
             Queue: queue,
             Reason: reason,
+        })
+    }
+
+    actionSIPPeers() {
+        return this.sendAction<AMISipPeersCompleteResult>({
+            Action: AMIActionTypes.SIPPeers,
+        })
+    }
+
+    actionCoreSettings() {
+        return this.sendAction<AMICoreSettingsResult>({
+            Action: AMIActionTypes.CoreSettings,
+        })
+    }
+
+    actionCoreStatus() {
+        return this.sendAction<AMICoreStatusResult>({
+            Action: AMIActionTypes.CoreStatus,
         })
     }
 

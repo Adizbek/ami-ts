@@ -69,7 +69,7 @@ export default class AMIDataReader extends TypedEventEmitter<AMIDataReaderEvents
                 const key = line.substring(0, splitAt)
                 const value = line.substring(splitAt + 2)
 
-                if (key && value) {
+                if (key) {
                     this.resultHolder[key] = value
                 }
             } else {

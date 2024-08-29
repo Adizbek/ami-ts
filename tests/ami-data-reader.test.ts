@@ -161,4 +161,48 @@ describe('AMI data reader module', () => {
 
         expect(cb).toHaveBeenCalledTimes(2)
     })
+
+    test('Should read null properties', () => {
+        const msg =
+            'Response: Success\r\n' +
+            'ActionID: 2\r\n' +
+            'AMIversion: 5.0.1\r\n' +
+            'AsteriskVersion: 16.7.0\r\n' +
+            'SystemName: \r\n' +
+            'CoreMaxCalls: 0\r\n' +
+            'CoreMaxLoadAvg: 0.000000\r\n' +
+            'CoreRunUser: \r\n' +
+            'CoreRunGroup: \r\n' +
+            'CoreMaxFilehandles: 0\r\n' +
+            'CoreRealTimeEnabled: No\r\n' +
+            'CoreCDRenabled: Yes\r\n' +
+            'CoreHTTPenabled: No\r\n' +
+            '\r\n'
+
+        const reader = new AMIDataReader()
+
+        const cb = jest.fn().mockImplementation((result) => {
+            expect(result).toEqual({
+                Response: 'Success',
+                ActionID: '2',
+                AMIversion: '5.0.1',
+                AsteriskVersion: '16.7.0',
+                SystemName: '',
+                CoreMaxCalls: '0',
+                CoreMaxLoadAvg: '0.000000',
+                CoreRunUser: '',
+                CoreRunGroup: '',
+                CoreMaxFilehandles: '0',
+                CoreRealTimeEnabled: 'No',
+                CoreCDRenabled: 'Yes',
+                CoreHTTPenabled: 'No',
+            })
+        })
+
+        reader.on(AMIDataReaderEvents.Result, cb)
+
+        reader.onNewData(Buffer.from(msg))
+
+        expect(cb).toHaveBeenCalledTimes(1)
+    })
 })
