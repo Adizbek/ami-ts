@@ -23,6 +23,7 @@ import {
     AMINewCalleridEvent,
     AMINewchannelEvent,
     AMINewConnectedLineEvent,
+    AMIQueueCallerAbandonEvent,
     AMIQueueCallerHangupEvent,
     AMIQueueCallerJoinEvent,
     AMIQueueCallerLeaveEvent,
@@ -55,6 +56,7 @@ export type AMIEventsDefinition = {
     ['onBridgeDestroy']: [AMIBridgeDestroyEvent]
     ['onBridgeEnter']: [AMIBridgeEnterEvent]
     ['onBridgeLeave']: [AMIBridgeLeaveEvent]
+    ['onQueueCallerAbandon']: [AMIQueueCallerAbandonEvent]
     ['onQueueCallerJoin']: [AMIQueueCallerJoinEvent]
     ['onQueueCallerHangup']: [AMIQueueCallerHangupEvent]
     ['onQueueCallerLeave']: [AMIQueueCallerLeaveEvent]
