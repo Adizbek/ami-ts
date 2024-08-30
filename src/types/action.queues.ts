@@ -25,12 +25,14 @@ export interface AMIQueuesQueueMemberStatusInfo {
 }
 
 export enum AMIQueueCallStrategy {
-    LeastRecent = 'leastrecent',
-    FewestCalls = 'fewestcalls',
-    Random = 'random',
-    RingAll = 'ringall',
-    RoundRobin = 'roundrobin',
-    RRMemory = 'rrmemory',
+    RingAll = 'ringall', // Rings all available agents until one answers.
+    LeastRecent = 'leastrecent', // Rings the agent who was least recently called.
+    FewestCalls = 'fewestcalls', // Calls the agent with the fewest completed calls.
+    Random = 'random', // Rings agents in a random order.
+    RoundRobinMemory = 'rrmemory', // Round-robin with memory; remembers the last agent who answered.
+    RoundRobinOrdered = 'rrordered', // Round-robin following a fixed order as listed.
+    Linear = 'linear', // Rings agents in the order they are listed.
+    WeightedRandom = 'wrandom', // Rings agents randomly based on assigned weights.
 }
 
 export interface AMIQueuesQueueStatusStatus {

@@ -1,5 +1,6 @@
 import Net from 'net'
 import EventEmitter from 'node:events'
+import { AMIEventsDefinition } from './AMI.types'
 import AMIDataReader, { AMIDataReaderEvents } from './AMIDataReader'
 import AMIDelayedResultCollector, {
     AMIDelayedResultCollectorEvents,
@@ -29,7 +30,10 @@ export default class AMI {
     private connection?: Net.Socket
     private connected = false
     private authenticated = false
-    private emitter = new EventEmitter()
+
+    private actionEmitter = new EventEmitter()
+    private eventEmitter = new EventEmitter()
+
     private actionId = 1
 
     private keepAliveIntervalRef?: NodeJS.Timeout
@@ -58,12 +62,17 @@ export default class AMI {
     async connect() {
         if (this._reconnectTimer) clearTimeout(this._reconnectTimer)
 
-        const delayedResultCollector = new AMIDelayedResultCollector().on(
-            AMIDelayedResultCollectorEvents.ActionResult,
-            (actionID, payload) => {
-                this.emitter.emit(`result_${actionID}`, payload)
-            }
-        )
+        const delayedResultCollector = new AMIDelayedResultCollector()
+            .on(
+                AMIDelayedResultCollectorEvents.ActionResult,
+                (actionID, payload) => {
+                    this.actionEmitter.emit(`result_${actionID}`, payload)
+                }
+            )
+            .on(AMIDelayedResultCollectorEvents.Event, (event) => {
+                this.eventEmitter.emit(`on${event.Event}`, event)
+                this.eventEmitter.emit('*', event)
+            })
 
         const dataReader = new AMIDataReader({
             logger: this.options.logger,
@@ -169,7 +178,7 @@ export default class AMI {
         const msg = this.makeAction(action, currentActionID)
 
         const result = new Promise<T>((resolve) => {
-            this.emitter.once(`result_${currentActionID}`, (result) =>
+            this.actionEmitter.once(`result_${currentActionID}`, (result) =>
                 resolve(result)
             )
         })
@@ -298,5 +307,23 @@ export default class AMI {
                 })
             }
         }, 1000)
+    }
+
+    on<TEventName extends keyof AMIEventsDefinition & string>(
+        eventName: TEventName,
+        handler: (...eventArg: AMIEventsDefinition[TEventName]) => void
+    ): this {
+        this.eventEmitter.on(eventName, handler as never)
+
+        return this
+    }
+
+    off<TEventName extends keyof AMIEventsDefinition & string>(
+        eventName: TEventName,
+        handler: (...eventArg: AMIEventsDefinition[TEventName]) => void
+    ): this {
+        this.eventEmitter.off(eventName, handler as never)
+
+        return this
     }
 }

@@ -1,4 +1,5 @@
 import { AMIDataReaderResult } from './AMIDataReader'
+import { AMIEvent } from './types/ami.events'
 import TypedEventEmitter from './utils/TypedEventEmitter'
 
 export enum AMIDelayedResultCollectorEvents {
@@ -13,6 +14,8 @@ export type AMIDelayedResultCollectorDefinition = {
         actionID: string,
         result: ActionResult,
     ]
+
+    [AMIDelayedResultCollectorEvents.Event]: [AMIEvent]
 }
 
 export interface AMIDelayedResultCollectorOptions {
@@ -29,7 +32,7 @@ export default class AMIDelayedResultCollector extends TypedEventEmitter<AMIDela
     }
 
     collect(result: AMIDataReaderResult) {
-        if (result.ActionID) {
+        if ('ActionID' in result && result.ActionID) {
             if (result.EventList === 'start') {
                 // if buffering started
                 this.collectorBuffer[result.ActionID] = []
@@ -54,6 +57,8 @@ export default class AMIDelayedResultCollector extends TypedEventEmitter<AMIDela
                     result
                 )
             }
+        } else if ('Event' in result && result.Event) {
+            this.emit(AMIDelayedResultCollectorEvents.Event, result)
         } else {
             this.options.logger?.log('Unknown result: ', result)
         }

@@ -1,3 +1,4 @@
+import { AMIEvent } from './types/ami.events'
 import TypedEventEmitter from './utils/TypedEventEmitter'
 
 export enum AMIDataReaderEvents {
@@ -12,13 +13,7 @@ export interface AMIDataReaderAsyncResult {
     Message?: 'Queue summary will follow'
 }
 
-export interface AMIDataReaderSyncResult {
-    [key: string]: string
-}
-
-export type AMIDataReaderResult =
-    | AMIDataReaderAsyncResult
-    | AMIDataReaderSyncResult
+export type AMIDataReaderResult = AMIEvent | AMIDataReaderAsyncResult
 
 export type AMIDataReaderEventsDefinition = {
     [AMIDataReaderEvents.Welcome]: []
@@ -82,7 +77,8 @@ export default class AMIDataReader extends TypedEventEmitter<AMIDataReaderEvents
                 if (Object.keys(this.resultHolder).length > 0) {
                     this.emit(AMIDataReaderEvents.Result, {
                         ...this.resultHolder,
-                    })
+                    } as never)
+
                     this.resultHolder = {}
                 }
             } else if (emptyLines > 1) {
