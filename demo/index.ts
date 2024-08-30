@@ -30,6 +30,10 @@ ami.connect()
             }
         })
 
+        // ami.on('onAgentComplete', (event) => {
+        //     console.log('onAgentComplete', event)
+        // })
+
         // ami.on('onQueueMemberStatus', (event) => {
         //     console.log('New event: ', event)
         // })

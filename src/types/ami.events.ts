@@ -1,6 +1,8 @@
 import { AMIQueueMemberStatus } from './action.queue-status'
 import { AMIQueueCallStrategy } from './action.queues'
 
+export type AMIBoolean = 'false' | 'true'
+
 export enum AMIChannelState {
     DOWN = '0', // Channel is down and available
     RESERVED = '1', // Channel is reserved
@@ -70,7 +72,7 @@ export interface AMIHangupRequestEvent {
     Priority: string
     Callid: string
     Linkedid: string
-    PageFlag: 'true' | 'false'
+    PageFlag: AMIBoolean
     Application: string
     Reg_calleenum: string
     Reg_callernum: string
@@ -287,7 +289,7 @@ export interface AMIHangupEvent {
     Priority: string // The priority of the dial plan entry being executed
     Callid: string // A unique identifier for the call
     Linkedid: string // The unique ID of the linked call, used to track call legs
-    PageFlag: 'true' | 'false' // Indicates whether the call was part of a paging operation
+    PageFlag: AMIBoolean // Indicates whether the call was part of a paging operation
     Application: string // The application that was executing when the hangup occurred
     Reg_calleenum: string // The registered caller number (if applicable)
     Reg_callernum: string // The registered caller number (if applicable)
@@ -321,7 +323,7 @@ export interface AMISoftHangupRequestEvent {
     Priority: string // The priority of the dial plan entry being executed
     Callid: string // A unique identifier for the call
     Linkedid: string // The unique ID of the linked call, used to track call legs
-    PageFlag: 'true' | 'false' // Indicates whether the call was part of a paging operation
+    PageFlag: AMIBoolean // Indicates whether the call was part of a paging operation
     Application: string // The application that was executing when the soft hangup request occurred
     Reg_calleenum: string // The registered caller number (if applicable)
     Reg_callernum: string // The registered caller number (if applicable)
@@ -349,7 +351,7 @@ export interface AMIDialBeginEvent {
     Priority: string // Priority of the dial plan entry being executed on the originating channel
     Callid: string // Unique identifier for the originating call
     Linkedid: string // Unique ID of the oldest linked channel, used to track call legs
-    PageFlag: 'true' | 'false' // Indicates whether the call was part of a paging operation
+    PageFlag: AMIBoolean // Indicates whether the call was part of a paging operation
     Application: string // The application that was executing on the originating channel
     Reg_calleenum: string // Registered callee number, if applicable
     Reg_callernum: string // Registered caller number, if applicable
@@ -369,7 +371,7 @@ export interface AMIDialBeginEvent {
     DestPriority: string // Priority of the dial plan entry being executed on the destination channel
     DestCallid: string // Unique identifier for the destination call
     DestLinkedid: string // Unique ID of the oldest linked channel for the destination
-    DestPageFlag: 'true' | 'false' // Indicates whether the destination call was part of a paging operation
+    DestPageFlag: AMIBoolean // Indicates whether the destination call was part of a paging operation
     DestApplication: string // The application that was executing on the destination channel
     DestReg_calleenum: string // Registered callee number for the destination, if applicable
     DestReg_callernum: string // Registered caller number for the destination, if applicable
@@ -395,7 +397,7 @@ export interface AMIDialEndEvent {
     Priority: string // Priority of the dial plan entry being executed on the originating channel
     Callid: string // Unique identifier for the originating call
     Linkedid: string // Unique ID of the oldest linked channel, used to track call legs
-    PageFlag: 'true' | 'false' // Indicates whether the call was part of a paging operation
+    PageFlag: AMIBoolean // Indicates whether the call was part of a paging operation
     Application: string // The application that was executing on the originating channel
     Reg_calleenum: string // Registered callee number, if applicable
     Reg_callernum: string // Registered caller number, if applicable
@@ -415,7 +417,7 @@ export interface AMIDialEndEvent {
     DestPriority: string // Priority of the dial plan entry being executed on the destination channel
     DestCallid: string // Unique identifier for the destination call
     DestLinkedid: string // Unique ID of the oldest linked channel for the destination
-    DestPageFlag: 'true' | 'false' // Indicates whether the destination call was part of a paging operation
+    DestPageFlag: AMIBoolean // Indicates whether the destination call was part of a paging operation
     DestApplication: string // The application that was executing on the destination channel
     DestReg_calleenum: string // Registered callee number for the destination, if applicable
     DestReg_callernum: string // Registered caller number for the destination, if applicable
@@ -442,7 +444,7 @@ export interface AMINewConnectedLineEvent {
     Priority: string // Priority of the dial plan entry being executed on the originating channel
     Callid: string // Unique identifier for the originating call
     Linkedid: string // Unique ID of the oldest linked channel, used to track call legs
-    PageFlag: 'true' | 'false' // Indicates whether the call was part of a paging operation
+    PageFlag: AMIBoolean // Indicates whether the call was part of a paging operation
     Application: string // The application that was executing on the originating channel
     Reg_calleenum: string // Registered callee number, if applicable
     Reg_callernum: string // Registered caller number, if applicable
@@ -467,7 +469,7 @@ export interface AMINewCalleridEvent {
     Priority: string // The priority of the call within the dial plan
     Callid: string // A unique identifier for the call
     Linkedid: string // The linked identifier for the call, used for tracking call legs
-    PageFlag: 'true' | 'false' // Indicates if the call is related to a paging operation (true/false)
+    PageFlag: AMIBoolean // Indicates if the call is related to a paging operation (true/false)
     Application: string // The application currently executing on the channel
     Reg_calleenum: string // The registered number of the callee
     Reg_callernum: string // The registered number of the caller
@@ -508,7 +510,7 @@ export interface AMINewchannelEvent {
     Priority: string // The priority of the call within the dial plan
     Callid: string // A unique identifier for the call, if available
     Linkedid: string // The linked identifier for the call, used for tracking call legs
-    PageFlag: 'true' | 'false' // Indicates if the call is related to a paging operation (true/false)
+    PageFlag: AMIBoolean // Indicates if the call is related to a paging operation (true/false)
     Application: string // The application currently executing on the channel, if any
     Reg_calleenum: string // The registered number of the callee, if available
     Reg_callernum: string // The registered number of the caller, if available
@@ -579,11 +581,378 @@ export interface AMIBridgeDestroyEvent {
     BridgeNumChannels: string // The number of channels currently in the bridge
 }
 
-export interface AMIBridgeEnterEvent {}
+export interface AMIBridgeLeaveEvent {
+    Event: AMIEventTypes.BridgeLeave // The type of event, e.g., 'BridgeLeave'
+    Privilege: 'call,all'
+    BridgeUniqueid: string // A unique identifier for the bridge
+    BridgeType: AMIBridgeType // The type of the bridge, indicating its functionality
+    BridgeTechnology: AMIBridgeTechnology // The technology used for the bridge
+    BridgeCreator: string // The creator of the bridge, usually the application or entity that initiated it
+    BridgeName: string // The name of the bridge, which may be set by the creator
+    BridgeNumChannels: string // The number of channels currently in the bridge
+    Channel: string // The channel associated with the event
+    ChannelState: AMIChannelState // Numeric code representing the current state of the channel
+    ChannelStateDesc: AMIChannelStateDescription // Description of the current state of the channel
+    CallerIDNum: string // Caller ID number of the calling party
+    CallerIDName: string // Caller ID name of the calling party, if available
+    ConnectedLineNum: string // Number of the line that the caller is connected to
+    ConnectedLineName: string // Name of the line that the caller is connected to, if available
+    Language: string // Language code used in the call
+    AccountCode: string // Account code associated with the call, used for billing or tracking
+    Context: string // The dial plan context in which the call is being handled
+    Exten: string // Extension involved in the call
+    Priority: string // Priority of the dial plan entry being executed
+    Callid: string // A unique identifier for the call
+    Linkedid: string // Unique ID of the oldest linked channel, used to track call legs
+    PageFlag: AMIBoolean // Indicates whether the call was part of a paging operation
+    Application: string // The application that was executing when the event occurred
+    Reg_calleenum: string // Registered callee number, if applicable
+    Reg_callernum: string // Registered caller number, if applicable
+    Reg_callername: string // Registered caller name, if applicable
+    Uniqueid: string // Unique identifier for the call, used for tracking and logging
+}
 
-export interface AMIBridgeLeaveEvent {}
+export interface AMIBridgeEnterEvent {
+    Event: AMIEventTypes.BridgeEnter // The type of event, e.g., 'BridgeEnter'
+    Privilege: 'call,all' // Privilege level required to receive the event
+    BridgeUniqueid: string // A unique identifier for the bridge
+    BridgeType: AMIBridgeType // The type of the bridge, indicating its functionality
+    BridgeTechnology: AMIBridgeTechnology // The technology used for the bridge
+    BridgeCreator: string // The creator of the bridge, usually the application or entity that initiated it
+    BridgeName: string // The name of the bridge, which may be set by the creator
+    BridgeNumChannels: string // The number of channels currently in the bridge
+    Channel: string // The channel associated with the event
+    ChannelState: AMIChannelState // Numeric code representing the current state of the channel
+    ChannelStateDesc: AMIChannelStateDescription // Description of the current state of the channel
+    CallerIDNum: string // Caller ID number of the calling party
+    CallerIDName: string // Caller ID name of the calling party, if available
+    ConnectedLineNum: string // Number of the line that the caller is connected to
+    ConnectedLineName: string // Name of the line that the caller is connected to, if available
+    Language: string // Language code used in the call
+    AccountCode: string // Account code associated with the call, used for billing or tracking
+    Context: string // The dial plan context in which the call is being handled
+    Exten: string // Extension involved in the call
+    Priority: string // Priority of the dial plan entry being executed
+    Callid: string // A unique identifier for the call
+    Linkedid: string // Unique ID of the oldest linked channel, used to track call legs
+    PageFlag: AMIBoolean // Indicates whether the call was part of a paging operation
+    Application: string // The application that was executing when the event occurred
+    Reg_calleenum: string // Registered callee number, if applicable
+    Reg_callernum: string // Registered caller number, if applicable
+    Reg_callername: string // Registered caller name, if applicable
+    Uniqueid: string // Unique identifier for the call, used for tracking and logging
+}
 
-// BridgeCreate, BridgeDestroy BridgeEnter, BridgeLeave
+export interface AMIQueueCallerJoinEvent {
+    Event: AMIEventTypes.QueueCallerJoin // The type of event, e.g., 'QueueCallerJoin'
+    Privilege: 'agent,all' // Privilege level required to receive the event
+    Channel: string // The channel associated with the event
+    ChannelState: AMIChannelState // Numeric code representing the current state of the channel
+    ChannelStateDesc: AMIChannelStateDescription // Description of the current state of the channel
+    CallerIDNum: string // Caller ID number of the calling party
+    CallerIDName: string // Caller ID name of the calling party, if available
+    ConnectedLineNum: string // Number of the line that the caller is connected to
+    ConnectedLineName: string // Name of the line that the caller is connected to, if available
+    Language: string // Language code used in the call
+    AccountCode: string // Account code associated with the call, used for billing or tracking
+    Context: string // The dial plan context in which the call is being handled
+    Exten: string // Extension involved in the call
+    Priority: string // Priority of the dial plan entry being executed
+    Callid: string // A unique identifier for the call
+    Linkedid: string // Unique ID of the oldest linked channel, used to track call legs
+    PageFlag: AMIBoolean // Indicates whether the call was part of a paging operation
+    Application: string // The application that was executing when the event occurred
+    Reg_calleenum: string // Registered callee number, if applicable
+    Reg_callernum: string // Registered caller number, if applicable
+    Reg_callername: string // Registered caller name, if applicable
+    Uniqueid: string // Unique identifier for the call, used for tracking and logging
+    Count: string // The number of callers currently in the queue
+    StartTime: string // The Unix timestamp indicating when the caller joined the queue
+    Queue: string // The name or identifier of the queue
+    Position: string // The current position of the caller in the queue
+}
+
+export interface AMIQueueCallerHangupEvent {
+    Event: AMIEventTypes.QueueCallerHangup // The type of event, e.g., 'QueueCallerHangup'
+    Privilege: 'agent,all' // Privilege level required to receive the event
+    Channel: string // The channel associated with the caller who hung up
+    ChannelState: AMIChannelState // Numeric code representing the current state of the channel
+    ChannelStateDesc: AMIChannelStateDescription // Description of the current state of the channel
+    CallerIDNum: string // Caller ID number of the caller who hung up
+    CallerIDName: string // Caller ID name of the caller who hung up, if available
+    ConnectedLineNum: string // Number of the line that the caller was connected to, usually empty or default
+    ConnectedLineName: string // Name of the line that the caller was connected to, usually empty or default
+    Language: string // Language code used in the call
+    AccountCode: string // Account code associated with the call, used for billing or tracking
+    Context: string // The dial plan context in which the caller was handled
+    Exten: string // The extension involved in the call
+    Priority: string // Priority of the dial plan entry being executed
+    Callid: string // A unique identifier for the call
+    Linkedid: string // Unique ID of the oldest linked channel, used to track call legs
+    PageFlag: AMIBoolean // Indicates whether the call was part of a paging operation
+    Application: string // The application that was executing when the hangup occurred
+    Reg_calleenum: string // Registered callee number, if applicable
+    Reg_callernum: string // Registered caller number, if applicable
+    Reg_callername: string // Registered caller name, if applicable
+    Uniqueid: string // Unique identifier for the call, used for tracking and logging
+    Queue: string // The name or identifier of the queue from which the caller hung up
+    PeerChannel: string // The channel associated with the peer in the call, often the agent or another party
+}
+
+/**
+ * @description Raised when a queue member answers and is bridged to a caller in the queue.
+ */
+export interface AMIAgentConnectEvent {
+    Event: AMIEventTypes.AgentConnect // The type of event, e.g., 'AgentConnect'
+    Privilege: 'agent,all' // Privilege level required to receive the event
+    Channel: string // The originating channel of the call
+    ChannelState: AMIChannelState // Numeric code representing the current state of the originating channel
+    ChannelStateDesc: AMIChannelStateDescription // Description of the current state of the originating channel
+    CallerIDNum: string // Caller ID number of the originating party
+    CallerIDName: string // Caller ID name of the originating party, if available
+    ConnectedLineNum: string // Number of the line connected to the originating channel
+    ConnectedLineName: string // Name of the line connected to the originating channel
+    Language: string // Language code used in the call
+    AccountCode: string // Account code associated with the call, used for billing or tracking
+    Context: string // The dial plan context in which the call is being handled
+    Exten: string // Extension involved in the call
+    Priority: string // Priority of the dial plan entry being executed
+    Callid: string // A unique identifier for the call
+    Linkedid: string // Unique ID of the oldest linked channel, used to track call legs
+    PageFlag: AMIBoolean // Indicates whether the call was part of a paging operation
+    Application: string // The application that was executing when the event occurred
+    Reg_calleenum: string // Registered callee number, if applicable
+    Reg_callernum: string // Registered caller number, if applicable
+    Reg_callername: string // Registered caller name, if applicable
+    Uniqueid: string // Unique identifier for the call, used for tracking and logging
+    DestChannel: string // The destination channel of the call (agent's channel)
+    DestChannelState: AMIChannelState // Numeric code representing the current state of the destination channel
+    DestChannelStateDesc: AMIChannelStateDescription // Description of the current state of the destination channel
+    DestCallerIDNum: string // Caller ID number of the destination party (agent)
+    DestCallerIDName: string // Caller ID name of the destination party (agent)
+    DestConnectedLineNum: string // Number of the line connected to the destination channel
+    DestConnectedLineName: string // Name of the line connected to the destination channel
+    DestLanguage: string // Language code used for the destination channel
+    DestAccountCode: string // Account code associated with the destination channel
+    DestContext: string // Dial plan context in which the destination channel is being handled
+    DestExten: string // Extension involved in the destination channel
+    DestPriority: string // Priority of the dial plan entry being executed on the destination channel
+    DestCallid: string // Unique identifier for the destination call
+    DestLinkedid: string // Unique ID of the oldest linked channel for the destination
+    DestPageFlag: AMIBoolean // Indicates whether the destination call was part of a paging operation
+    DestApplication: string // The application that was executing on the destination channel
+    DestReg_calleenum: string // Registered callee number for the destination, if applicable
+    DestReg_callernum: string // Registered caller number for the destination, if applicable
+    DestReg_callername: string // Registered caller name for the destination, if applicable
+    DestUniqueid: string // Unique identifier for the destination channel
+    Queue: string // The name or identifier of the queue involved in the event
+    Interface: string // The interface used by the agent (e.g., the agent's SIP channel)
+    HoldTime: string // The amount of time, in seconds, that the caller spent on hold before being connected to the agent
+    MemberName: string // The name of the agent or member who answered the call
+    RingTime: string // The amount of time, in seconds, that the agent's phone rang before being answered
+}
+
+/**
+ * @description Raised when a queue member is notified of a caller in the queue.
+ */
+export interface AMIAgentCalledEvent {
+    Event: AMIEventTypes.AgentCalled // The type of event, e.g., 'AgentCalled'
+    Privilege: 'agent,call' // Privilege level required to receive the event
+    Channel: string // The originating channel of the call
+    ChannelState: AMIChannelState // Numeric code representing the current state of the originating channel
+    ChannelStateDesc: AMIChannelStateDescription // Description of the current state of the originating channel
+    CallerIDNum: string // Caller ID number of the originating party
+    CallerIDName: string // Caller ID name of the originating party, if available
+    ConnectedLineNum: string // Number of the line connected to the originating channel
+    ConnectedLineName: string // Name of the line connected to the originating channel
+    Language: string // Language code used in the call
+    AccountCode: string // Account code associated with the call, used for billing or tracking
+    Context: string // The dial plan context in which the call is being handled
+    Exten: string // Extension involved in the call
+    Priority: string // Priority of the dial plan entry being executed
+    Callid: string // A unique identifier for the call
+    Linkedid: string // Unique ID of the oldest linked channel, used to track call legs
+    PageFlag: AMIBoolean // Indicates whether the call was part of a paging operation
+    Application: string // The application that was executing when the event occurred
+    Reg_calleenum: string // Registered callee number, if applicable
+    Reg_callernum: string // Registered caller number, if applicable
+    Reg_callername: string // Registered caller name, if applicable
+    Uniqueid: string // Unique identifier for the call, used for tracking and logging
+    DestChannel: string // The destination channel of the call (agent's channel)
+    DestChannelState: AMIChannelState // Numeric code representing the current state of the destination channel
+    DestChannelStateDesc: AMIChannelStateDescription // Description of the current state of the destination channel
+    DestCallerIDNum: string // Caller ID number of the destination party (agent)
+    DestCallerIDName: string // Caller ID name of the destination party (agent)
+    DestConnectedLineNum: string // Number of the line connected to the destination channel
+    DestConnectedLineName: string // Name of the line connected to the destination channel
+    DestLanguage: string // Language code used for the destination channel
+    DestAccountCode: string // Account code associated with the destination channel
+    DestContext: string // Dial plan context in which the destination channel is being handled
+    DestExten: string // Extension involved in the destination channel
+    DestPriority: string // Priority of the dial plan entry being executed on the destination channel
+    DestCallid: string // Unique identifier for the destination call
+    DestLinkedid: string // Unique ID of the oldest linked channel for the destination
+    DestPageFlag: AMIBoolean // Indicates whether the destination call was part of a paging operation
+    DestApplication: string // The application that was executing on the destination channel
+    DestReg_calleenum: string // Registered callee number for the destination, if applicable
+    DestReg_callernum: string // Registered caller number for the destination, if applicable
+    DestReg_callername: string // Registered caller name for the destination, if applicable
+    DestUniqueid: string // Unique identifier for the destination channel
+    Queue: string // The name or identifier of the queue involved in the event
+    Interface: string // The interface used by the agent (e.g., the agent's SIP channel)
+    MemberName: string // The name of the agent or member being called
+}
+
+export interface AMIAgentCompleteEvent {
+    Event: AMIEventTypes.AgentComplete // The type of event, e.g., 'AgentComplete'
+    Privilege: 'agent,all' // Privilege level required to receive the event
+    Channel: string // The originating channel of the call
+    ChannelState: AMIChannelState // Numeric code representing the current state of the originating channel
+    ChannelStateDesc: AMIChannelStateDescription // Description of the current state of the originating channel
+    CallerIDNum: string // Caller ID number of the originating party
+    CallerIDName: string // Caller ID name of the originating party, if available
+    ConnectedLineNum: string // Number of the line connected to the originating channel
+    ConnectedLineName: string // Name of the line connected to the originating channel
+    Language: string // Language code used in the call
+    AccountCode: string // Account code associated with the call, used for billing or tracking
+    Context: string // The dial plan context in which the call is being handled
+    Exten: string // Extension involved in the call
+    Priority: string // Priority of the dial plan entry being executed
+    Callid: string // A unique identifier for the call
+    Linkedid: string // Unique ID of the oldest linked channel, used to track call legs
+    PageFlag: AMIBoolean // Indicates whether the call was part of a paging operation
+    Application: string // The application that was executing when the event occurred
+    Reg_calleenum: string // Registered callee number, if applicable
+    Reg_callernum: string // Registered caller number, if applicable
+    Reg_callername: string // Registered caller name, if applicable
+    Uniqueid: string // Unique identifier for the originating channel
+    DestChannel: string // The destination channel of the call
+    DestChannelState: string // Numeric code representing the current state of the destination channel
+    DestChannelStateDesc: string // Description of the current state of the destination channel
+    DestCallerIDNum: string // Caller ID number of the destination party
+    DestCallerIDName: string // Caller ID name of the destination party
+    DestConnectedLineNum: string // Number of the line connected to the destination channel
+    DestConnectedLineName: string // Name of the line connected to the destination channel
+    DestLanguage: string // Language code used for the destination channel
+    DestAccountCode: string // Account code associated with the destination channel
+    DestContext: string // Dial plan context in which the destination channel is being handled
+    DestExten: string // Extension involved in the destination channel
+    DestPriority: string // Priority of the dial plan entry being executed on the destination channel
+    DestCallid: string // Unique identifier for the destination call
+    DestLinkedid: string // Unique ID of the oldest linked channel for the destination
+    DestPageFlag: AMIBoolean // Indicates whether the destination call was part of a paging operation
+    DestApplication: string // The application that was executing on the destination channel
+    DestReg_calleenum: string // Registered callee number for the destination, if applicable
+    DestReg_callernum: string // Registered caller number for the destination, if applicable
+    DestReg_callername: string // Registered caller name for the destination, if applicable
+    DestUniqueid: string // Unique identifier for the destination channel
+    Queue: string // The name or identifier of the queue involved in the event
+    TalkTime: string // The amount of time, in seconds, that the agent spent talking to the caller
+    Interface: string // The interface (e.g., SIP channel) used by the agent
+    HoldTime: string // The amount of time, in seconds, that the caller spent on hold before the call was answered
+    MemberName: string // The name of the agent or member who answered the call
+    Reason: 'caller' | 'agent' | 'transfer' // The reason for the event, such as 'agent' indicating the agent completed the call
+}
+
+export interface AMIAgentRingNoAnswerEvent {
+    Event: AMIEventTypes.AgentRingNoAnswer // The type of event, e.g., 'AgentRingNoAnswer'
+    Privilege: 'agent,all' // Privilege level required to receive the event
+    Channel: string // The originating channel of the call
+    ChannelState: AMIChannelState // Numeric code representing the current state of the originating channel
+    ChannelStateDesc: AMIChannelStateDescription // Description of the current state of the originating channel
+    CallerIDNum: string // Caller ID number of the originating party
+    CallerIDName: string // Caller ID name of the originating party, if available
+    ConnectedLineNum: string // Number of the line connected to the originating channel
+    ConnectedLineName: string // Name of the line connected to the originating channel
+    Language: string // Language code used in the call
+    AccountCode: string // Account code associated with the call, used for billing or tracking
+    Context: string // The dial plan context in which the call is being handled
+    Exten: string // Extension involved in the call
+    Priority: string // Priority of the dial plan entry being executed
+    Callid: string // A unique identifier for the call
+    Linkedid: string // Unique ID of the oldest linked channel, used to track call legs
+    PageFlag: AMIBoolean // Indicates whether the call was part of a paging operation
+    Application: string // The application that was executing when the event occurred
+    Reg_calleenum: string // Registered callee number, if applicable
+    Reg_callernum: string // Registered caller number, if applicable
+    Reg_callername: string // Registered caller name, if applicable
+    Uniqueid: string // Unique identifier for the call, used for tracking and logging
+    DestChannel: string // The destination channel of the call (agent's channel)
+    DestChannelState: AMIChannelState // Numeric code representing the current state of the destination channel
+    DestChannelStateDesc: AMIChannelStateDescription // Description of the current state of the destination channel
+    DestCallerIDNum: string // Caller ID number of the destination party (agent)
+    DestCallerIDName: string // Caller ID name of the destination party (agent)
+    DestConnectedLineNum: string // Number of the line connected to the destination channel
+    DestConnectedLineName: string // Name of the line connected to the destination channel
+    DestLanguage: string // Language code used for the destination channel
+    DestAccountCode: string // Account code associated with the destination channel
+    DestContext: string // Dial plan context in which the destination channel is being handled
+    DestExten: string // Extension involved in the destination channel
+    DestPriority: string // Priority of the dial plan entry being executed on the destination channel
+    DestCallid: string // Unique identifier for the destination call
+    DestLinkedid: string // Unique ID of the oldest linked channel for the destination
+    DestPageFlag: AMIBoolean // Indicates whether the destination call was part of a paging operation
+    DestApplication: string // The application that was executing on the destination channel
+    DestReg_calleenum: string // Registered callee number for the destination, if applicable
+    DestReg_callernum: string // Registered caller number for the destination, if applicable
+    DestReg_callername: string // Registered caller name for the destination, if applicable
+    DestUniqueid: string // Unique identifier for the destination channel
+    Queue: string // The name or identifier of the queue involved in the event
+    Interface: string // The interface used by the agent (e.g., the agent's SIP channel)
+    MemberName: string // The name of the agent or member being called
+    RingTime: string // The amount of time, in milliseconds, that the agent's phone rang before no answer
+}
+
+export interface AMIMusicOnHoldStartEvent {
+    Event: AMIEventTypes.MusicOnHoldStart // The type of event, e.g., 'MusicOnHoldStart'
+    Privilege: 'call,all' // Privilege level required to receive the event
+    Channel: string // The channel associated with the event
+    ChannelState: AMIChannelState // Numeric code representing the current state of the channel
+    ChannelStateDesc: AMIChannelStateDescription // Description of the current state of the channel
+    CallerIDNum: string // Caller ID number of the calling party
+    CallerIDName: string // Caller ID name of the calling party, if available
+    ConnectedLineNum: string // Number of the line that the caller is connected to
+    ConnectedLineName: string // Name of the line that the caller is connected to, if available
+    Language: string // Language code used in the call
+    AccountCode: string // Account code associated with the call, used for billing or tracking
+    Context: string // The dial plan context in which the call is being handled
+    Exten: string // Extension involved in the call
+    Priority: string // Priority of the dial plan entry being executed
+    Callid: string // A unique identifier for the call
+    Linkedid: string // Unique ID of the oldest linked channel, used to track call legs
+    PageFlag: AMIBoolean // Indicates whether the call was part of a paging operation
+    Application: string // The application that was executing when the event occurred
+    Reg_calleenum: string // Registered callee number, if applicable
+    Reg_callernum: string // Registered caller number, if applicable
+    Reg_callername: string // Registered caller name, if applicable
+    Uniqueid: string // Unique identifier for the call, used for tracking and logging
+    Class: string | 'default' // The music class that was started, determining the type of music on hold played
+}
+
+export interface AMIMusicOnHoldStopEvent {
+    Event: AMIEventTypes.MusicOnHoldStop // The type of event, e.g., 'MusicOnHoldStop'
+    Privilege: 'call,all' // Privilege level required to receive the event
+    Channel: string // The channel associated with the event
+    ChannelState: AMIChannelState // Numeric code representing the current state of the channel
+    ChannelStateDesc: AMIChannelStateDescription // Description of the current state of the channel
+    CallerIDNum: string // Caller ID number of the calling party
+    CallerIDName: string // Caller ID name of the calling party, if available
+    ConnectedLineNum: string // Number of the line that the caller is connected to
+    ConnectedLineName: string // Name of the line that the caller is connected to, if available
+    Language: string // Language code used in the call
+    AccountCode: string // Account code associated with the call, used for billing or tracking
+    Context: string // The dial plan context in which the call is being handled
+    Exten: string // Extension involved in the call
+    Priority: string // Priority of the dial plan entry being executed
+    Callid: string // A unique identifier for the call
+    Linkedid: string // Unique ID of the oldest linked channel, used to track call legs
+    PageFlag: AMIBoolean // Indicates whether the call was part of a paging operation
+    Application: string // The application that was executing when the event occurred
+    Reg_calleenum: string // Registered callee number, if applicable
+    Reg_callernum: string // Registered caller number, if applicable
+    Reg_callername: string // Registered caller name, if applicable
+    Uniqueid: string // Unique identifier for the call, used for tracking and logging
+}
 
 export enum AMIEventTypes {
     QueueMemberStatus = 'QueueMemberStatus',
@@ -606,6 +975,14 @@ export enum AMIEventTypes {
     BridgeDestroy = 'BridgeDestroy',
     BridgeEnter = 'BridgeEnter',
     BridgeLeave = 'BridgeLeave',
+    QueueCallerJoin = 'QueueCallerJoin',
+    QueueCallerHangup = 'QueueCallerHangup',
+    AgentConnect = 'AgentConnect',
+    AgentCalled = 'AgentCalled',
+    AgentComplete = 'AgentComplete',
+    AgentRingNoAnswer = 'AgentRingNoAnswer',
+    MusicOnHoldStart = 'MusicOnHoldStart',
+    MusicOnHoldStop = 'MusicOnHoldStop',
 }
 
 export const AvailableAMIEvents: AMIEventTypes[] = Object.values(AMIEventTypes)
@@ -631,3 +1008,11 @@ export type AMIEvent =
     | AMIBridgeDestroyEvent
     | AMIBridgeEnterEvent
     | AMIBridgeLeaveEvent
+    | AMIQueueCallerJoinEvent
+    | AMIQueueCallerHangupEvent
+    | AMIAgentCalledEvent
+    | AMIAgentConnectEvent
+    | AMIAgentCompleteEvent
+    | AMIAgentRingNoAnswerEvent
+    | AMIMusicOnHoldStartEvent
+    | AMIMusicOnHoldStopEvent

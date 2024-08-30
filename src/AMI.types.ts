@@ -1,5 +1,8 @@
 import {
     AMIActiveCountEvent,
+    AMIAgentCompleteEvent,
+    AMIBridgeCreateEvent,
+    AMIBridgeDestroyEvent,
     AMICdrEvent,
     AMIDeviceStateChangeEvent,
     AMIDialEndEvent,
@@ -7,9 +10,11 @@ import {
     AMIExtensionStatusEvent,
     AMIHangupEvent,
     AMIHangupRequestEvent,
+    AMIMusicOnHoldStopEvent,
     AMINewCalleridEvent,
     AMINewchannelEvent,
     AMINewConnectedLineEvent,
+    AMIQueueCallerHangupEvent,
     AMIQueueMemberPauseEvent,
     AMIQueueMemberStatusEvent,
     AMIQueueStatusEvent,
@@ -33,5 +38,10 @@ export type AMIEventsDefinition = {
     ['onNewConnectedLine']: [AMINewConnectedLineEvent]
     ['onNewCallerid']: [AMINewCalleridEvent]
     ['onNewchannel']: [AMINewchannelEvent]
-    ['onQueueVqCallers']: AMIQueueVqCallersEvent
+    ['onQueueVqCallers']: [AMIQueueVqCallersEvent]
+    ['onBridgeCreate']: [AMIBridgeCreateEvent]
+    ['onBridgeDestroy']: [AMIBridgeDestroyEvent]
+    ['onQueueCallerHangup']: [AMIQueueCallerHangupEvent]
+    ['onAgentComplete']: [AMIAgentCompleteEvent]
+    ['onMusicOnHoldStop']: [AMIMusicOnHoldStopEvent]
 }
