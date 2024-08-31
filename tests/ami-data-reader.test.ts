@@ -1,5 +1,5 @@
 import { describe, test } from '@jest/globals'
-import AMIDataReader, { AMIDataReaderEvents } from '../src/AMIDataReader'
+import { AMIDataReader, AMIDataReaderEvents } from '../src'
 
 describe('AMI data reader module', () => {
     test('Should read multiple events', () => {

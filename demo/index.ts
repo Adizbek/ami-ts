@@ -1,7 +1,6 @@
 /* eslint-disable */
 import { config } from 'dotenv'
-import AMI from '../src/AMI'
-import { AvailableAMIEvents } from '../src/types/ami.events'
+import AMI, { AvailableAMIEvents } from '../src'
 
 config()
 
