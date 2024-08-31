@@ -13,7 +13,7 @@ const ami = new AMI({
     reconnect: true,
     keepAlive: true,
     listenEvents: true,
-    // logger: console,
+    logger: console,
 })
 
 ami.connect()
@@ -21,6 +21,8 @@ ami.connect()
         ami.on('*', (event) => {
             if (!AvailableAMIEvents.includes(event.Event)) {
                 console.log('New event: ', event)
+            } else {
+                console.log(`New event: ${event.Event}`, event)
             }
         })
     })

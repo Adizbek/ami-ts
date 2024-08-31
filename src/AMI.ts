@@ -24,7 +24,8 @@ import { AMISipPeersCompleteResult } from './types/action.sip-peers'
 export * from './types'
 
 const DEFAULT_RECONNECT_INTERVAL = 2000
-const DEFAULT_READ_TIMEOUT = 10000
+const DEFAULT_READ_TIMEOUT = 60000
+const DEFAULT_PING_INTERVAL = 30000
 
 export default class AMI {
     private connection?: Net.Socket
@@ -47,7 +48,8 @@ export default class AMI {
             keepAlive: true,
             reconnect: true,
             listenEvents: true,
-            readTimeout: 30000,
+            readTimeout: DEFAULT_READ_TIMEOUT,
+            pingInterval: DEFAULT_PING_INTERVAL
         }
 
         this.options = Object.assign(defaultConfig, this.options)
@@ -306,7 +308,7 @@ export default class AMI {
                     this.options.logger?.debug(result)
                 })
             }
-        }, 1000)
+        }, this.options.pingInterval || DEFAULT_PING_INTERVAL)
     }
 
     on<TEventName extends keyof AMIEventsDefinition & string>(

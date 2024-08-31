@@ -5,6 +5,7 @@ export interface AMIOptions {
     password: string
     listenEvents?: boolean
     keepAlive?: boolean
+    pingInterval?: number
     reconnect?: boolean
     reconnectInterval?: number
     readTimeout?: number
