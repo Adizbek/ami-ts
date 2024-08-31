@@ -275,7 +275,7 @@ describe('AMI  result collector module', () => {
             .map((line) => {
                 try {
                     return JSON.parse(line).chunk
-                } catch (e) {
+                } catch (_) {
                     return ''
                 }
             })

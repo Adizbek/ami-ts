@@ -23,6 +23,14 @@ module.exports = {
     plugins: ['@typescript-eslint'],
     rules: {
         'no-console': 'error',
+        '@typescript-eslint/no-unused-vars': [
+            'warn', // or "error"
+            {
+                argsIgnorePattern: '^_',
+                varsIgnorePattern: '^_',
+                caughtErrorsIgnorePattern: '^_',
+            },
+        ],
     },
     ignorePatterns: ['node_modules', 'lib'],
 }

@@ -1,5 +1,8 @@
 ### Node template
 # Logs
+lib
+node_modules
+
 logs
 *.log
 npm-debug.log*
